@@ -35,3 +35,8 @@ plot(x_2418, y_2418);
 plot(x_2418(1:my_res), yc_2418);
 xlim([-0.2 my_chord + 0.2]);
 ylim([-1 1]);
+
+
+%% Vortex Panel Output
+
+CL = Vortex_Panel(x_0018, y_0018, 5);
