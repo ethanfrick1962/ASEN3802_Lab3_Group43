@@ -15,6 +15,8 @@ my_chord = 1;
 %% Plot
 
 % Plotting NACA 0018
+set(groot, 'DefaultLineLineWidth', 1)
+
 figure();
 hold on
 grid on
@@ -24,6 +26,8 @@ plot(x_0018, y_0018);
 % plot(x_0018(1:my_res), yc_0018);
 xlim([-0.2 my_chord + 0.2]);
 ylim([-1 1]);
+
+print(gcf, 'NACA_0018_Airfoil.png', '-dpng', '-r300');
 
 % Plotting NACA 2418
 figure();
@@ -35,6 +39,8 @@ plot(x_2418, y_2418);
 plot(x_2418(1:my_res), yc_2418);
 xlim([-0.2 my_chord + 0.2]);
 ylim([-1 1]);
+
+print(gcf, 'NACA_2418_Airfoil.png', '-dpng', '-r300');
 
 
 %% Vortex Panel Output
@@ -68,9 +74,13 @@ title("CL by Panel Number")
 xlabel("Number of Panels")
 ylabel("Coefficient of Lift")
 plot(my_res2, CL2);
-
 % Find approximate resolution
 approxTarget = 0.99*CL2(51);
 % Determine the index of the closest resolution to the target
 [~, targetIndex] = min(abs(CL2 - approxTarget));
 panelRes = my_res2(targetIndex);
+
+yline(approxTarget, "LineStyle","--", "Color", 'r', 'LineWidth', 1.3)
+yline((CL2(end) - approxTarget) + CL2(end), "LineStyle","--", "Color", 'r', 'LineWidth',1.3)
+legend("CL","Error \pm 1%")
+print(gcf, 'CL_by_Panels.png', '-dpng', '-r300');
