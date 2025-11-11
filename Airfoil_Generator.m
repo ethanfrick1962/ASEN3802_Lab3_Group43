@@ -72,7 +72,7 @@ function [XB, YB, YC] = Airfoil_Generator(MAX_CAMBER, LOC_CAMBER, MAX_THICK, C, 
     XB = [XU fliplr(XL)];
     YB = [YU fliplr(YL)];
 
-    XB = XB([101:200, 2:100]);
-    YB = YB([101:200, 2:100]);
+    XB = XB([RES+1:RES*2, 2:RES]);
+    YB = YB([RES+1:RES*2, 2:RES]);
     
 end
