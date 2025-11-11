@@ -1,0 +1,34 @@
+clear ;
+close all;
+clc;
+
+%NACA 0006 (Relatively Thin Airfoil)
+%NACA 0012 (Moderate Thickness Airfoil)
+%NACA 0018 (Relatively Thick Airfoil)
+
+NACA1 = [0, 0, 06, 1, 15];
+NACA2 = [0, 0, 12, 1, 15];
+NACA3 = [0, 0, 18, 1, 15];
+airfoils = {NACA1, NACA2, NACA3};
+titles = {'NACA 0006', 'NACA 0012', 'NACA 0018'};
+alphas = -15:1:15;
+
+figure
+for j = 1:3
+    NACA = airfoils{j};
+    [XB, YB, ~] = Airfoil_Generator(NACA(1), NACA(2), NACA(3), NACA(4), 131);
+    CL = zeros(size(alphas));
+
+    for i = 1:length(alphas)
+        alpha = alphas(i);
+        CL(i) = Vortex_Panel(XB, YB, alpha);
+    end
+
+    subplot(3,1,j)
+    plot(alphas, CL, '.-', 'LineWidth', 1.5)
+    xlabel('Angle of Attack (degrees)')
+    ylabel('Lift Coefficient, C_L')
+    title(titles{j})
+    grid on
+
+end
