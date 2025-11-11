@@ -2,10 +2,6 @@
 
 clear; clc; close all;
 
-%% Adding functions
-
-addpath('func');
-
 %% Generate airfoil output
 
 my_res = 100;
