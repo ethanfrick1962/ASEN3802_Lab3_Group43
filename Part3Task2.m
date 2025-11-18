@@ -60,4 +60,5 @@ end
 
 
 plot(AoA,total_cd);
+
 hold on
