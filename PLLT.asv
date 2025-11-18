@@ -21,24 +21,13 @@ arguments (Output)
 end
 
 AR = b/((c_t+c_r)/2);
-myTheta =(((1:N) * pi) / (2 * N));
+myTheta = (linspace(0,1,N)) .* (((1:N) * pi) / (2 * N));
 myLine = (-b/2) * cos(myTheta);
-myChord = c_t + myLine .* (c_t - c_r);
 myZeroLift = aero_t + myLine .*(aero_t - aero_r);
 myAoA = geo_t + myLine .* (geo_t - geo_r);
 myLift = a0_t + myLine .* (a0_t - a0_r);
 M = zeros(N,N);
 
 for j = 1:N
-    M(:,j) = ((4*b .* sin((2*j-1).*myTheta)) ./ (myLift .* myChord)) + (2*j-1) .* (sin((2*j-1) .* myTheta) ./ sin(myTheta));
+    M(:,j) = (4b/myZero)
 end
-
-a = M \ (myAoA - myZeroLift)';
-myDelta = 0;
-for j = 2:N
-myDelta = myDelta + (j*((a(j))/a(1))^2);
-end
-
-c_L = a(1) * pi * AR;
-c_Di = (c_L^2 * (1+myDelta))/(pi * AR);
-e = 1/(1+myDelta);
