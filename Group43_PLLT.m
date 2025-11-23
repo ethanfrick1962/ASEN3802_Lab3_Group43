@@ -2,10 +2,80 @@
 
 clear; clc; close all;
 
-%% Test Case
+%% Part 1 - Test Case
 
-% Recall order: b, a0_t, a0_r, c_t, c_r, aero_t, aero_r, geo_t, geo_r, N
-[e, c_L, c_Di] = PLLT(10, 6.0, 6.0, 0.75, 1.25, -0.035, -0.035, 0.0873, 0.0873, 5);
+% See the solution struct for the results if you edit this test case.
+% All units are either dimensionless or in [m] and [rad].
+b = 10;
+a0_t = 6.0;
+a0_r = 6.0;
+c_t = 0.75;
+c_r = 1.25;
+aero_t = -0.035;
+aero_r = -0.035;
+geo_t = 0.0873;
+geo_r = 0.0873;
+N = 20;
+
+% Calculate test case
+[solution.e, solution.c_L, solution.c_Di] = PLLT(b, a0_t, a0_r, c_t, c_r, aero_t, aero_r, geo_t, geo_r, N);
+
+% Display test case results
+disp('Test Case Results:');
+disp(' ');
+disp(['e = ' num2str(solution.e)]);
+disp(['c_L = ' num2str(solution.c_L)]);
+disp(['c_Di = ' num2str(solution.c_Di)]);
+
+%% Part 2 - Figure 5.20 Replication
+
+% Creating AR and taper cases
+AR = [4 6 8 10];
+TR = linspace(0, 1, 50);
+
+% Preallocate the results matrix
+this_e = zeros(length(AR), length(TR)); 
+
+% Calculate span efficiency factor for every case
+for AR_i = 1:length(AR)
+
+    for TR_i = 1:length(TR)
+
+        % Calculate taper and wingspan based on AR and ratio
+        c_r = 1;
+        c_t = TR(TR_i) * c_r;
+        b = (AR(AR_i) * (c_t + c_r)) / 2;
+
+        % Calculate span efficiency factor
+        [this_e(AR_i, TR_i), ~, ~] = PLLT(b, a0_t, a0_r, c_t, c_r, aero_t, aero_r, geo_t, geo_r, N);
+
+    end
+
+end
+
+% Converting span efficiency factor to delta
+this_delta = (1 ./ this_e) - 1;
+
+% Plotting delta with span efficiency factor
+figure();
+hold on
+grid on
+
+% Metadata generation
+title('Delta vs taper ratio');
+xlabel('Taper ratio, $\frac{c_t}{c_r}$', 'Interpreter', 'latex');
+ylabel('$\delta$', 'Interpreter', 'latex', Rotation=0);
+legend('show', 'Location', 'best');
+
+% Iteratively plotting by aspect ratio
+for AR_i = 1:length(AR)
+
+    plot(TR, this_delta(AR_i, :), 'DisplayName', ['AR = ' num2str(AR(AR_i))]);
+    
+end
+
+% Create figure (for team, will be commented in submission)
+% print(gcf, 'Figure_5-20_Replication.png', '-dpng', '-r300');
 
 %% PLLT Function Definition
 
@@ -40,15 +110,15 @@ function [e, c_L, c_Di] = PLLT(b, a0_t, a0_r, c_t, c_r, aero_t, aero_r, geo_t, g
     % interpolation was lengthy... but makes sense since it's not just some
     % direct conversion via y = -b/2 * cos(theta), but rather the factor of
     % linearization.
-    AR = b/((c_t+c_r)/2);
-    theta = (1:N)' * pi / (2 * N);
+    AR = (2*b)/(c_t+c_r);
+    theta = ((1:N)' * pi) / (2 * N);
     linfactor = cos(theta);
     
     % Linear interpolation of properties
-    myChord =       c_r         + (c_t - c_r) * abs(linfactor);
-    myZeroLift =    aero_r      + (aero_t - aero_r) * abs(linfactor);
-    myAoA =         geo_r       + (geo_t - geo_r) * abs(linfactor);
-    myLiftCurve =   a0_r        + (a0_t - a0_r) * abs(linfactor);
+    myChord =       c_r         + (c_t - c_r) * linfactor;
+    myZeroLift =    aero_r      + (aero_t - aero_r) * linfactor;
+    myAoA =         geo_r       + (geo_t - geo_r) * linfactor;
+    myLiftCurve =   a0_r        + (a0_t - a0_r) * linfactor;
     
     % Building solution matrix
     M = zeros(N,N);
