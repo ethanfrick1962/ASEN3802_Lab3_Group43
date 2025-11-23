@@ -6,15 +6,20 @@ clear; clc; close all;
 
 % See the solution struct for the results if you edit this test case.
 % All units are either dimensionless or in [m] and [rad].
+
+% Angle of attack (5 degrees)
+aoa = 5 * pi/180;
+
+% Wing parameters
 b = 10;
-a0_t = 6.0;
-a0_r = 6.0;
+a0_t = 2 * pi;
+a0_r = 2 * pi;
 c_t = 0.75;
 c_r = 1.25;
-aero_t = -0.035;
-aero_r = -0.035;
-geo_t = 0.0873;
-geo_r = 0.0873;
+aero_t = 0;
+aero_r = 0;
+geo_t = aoa;
+geo_r = aoa;
 N = 20;
 
 % Calculate test case
