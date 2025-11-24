@@ -20,7 +20,7 @@ aero_t = 0;
 aero_r = 0;
 geo_t = aoa;
 geo_r = aoa;
-N = 20;
+N = 50;
 
 % Calculate test case
 [solution.e, solution.c_L, solution.c_Di] = PLLT(b, a0_t, a0_r, c_t, c_r, aero_t, aero_r, geo_t, geo_r, N);
